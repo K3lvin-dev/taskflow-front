@@ -1,0 +1,38 @@
+name: CI/CD - Build and Push TaskFlow Front-end
+
+on:
+  push:
+    branches: ["main", "develop"]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Fazer checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Logar no GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Definir tag da imagem
+        id: image_tag
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "TAG=latest" >> $GITHUB_ENV
+          else
+            echo "TAG=dev" >> $GITHUB_ENV
+          fi
+
+      - name: Construir e enviar imagem Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/k3lvin-dev/taskflow-frontend:${{ env.TAG }}
