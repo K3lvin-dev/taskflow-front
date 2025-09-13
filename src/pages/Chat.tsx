@@ -47,59 +47,82 @@ const Chat = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-background border-b border-border">
-        <div className="flex items-center gap-3 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex flex-col">
+      {/* Header com design moderno */}
+      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm">
+        <div className="flex items-center gap-4 p-4 max-w-4xl mx-auto">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/')}
-            className="p-2 h-8 w-8"
+            className="p-2 h-10 w-10 rounded-full hover:bg-primary/10 hover:text-primary transition-all duration-200"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5 text-primary" />
-            <h1 className="text-lg font-semibold">Chat da Equipe</h1>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center shadow-lg">
+              <MessageCircle className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">Chat da Equipe</h1>
+              <p className="text-xs text-muted-foreground">Colabore em tempo real</p>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div key={message.id} className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <User className="h-3 w-3" />
-              <span className="font-medium">{message.userName}</span>
-              <span>•</span>
-              <span>{formatTime(message.timestamp)}</span>
+      {/* Messages com design moderno */}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 max-w-4xl mx-auto w-full">
+        {messages.map((message) => {
+          const isOwnMessage = message.userName === auth.user?.name;
+          return (
+            <div key={message.id} className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+              <div className={`max-w-[85%] sm:max-w-md space-y-2 ${isOwnMessage ? 'items-end' : 'items-start'} flex flex-col`}>
+                {/* Nome e timestamp */}
+                <div className={`flex items-center gap-2 text-xs text-muted-foreground ${isOwnMessage ? 'flex-row-reverse' : ''}`}>
+                  <span className="font-medium">{message.userName}</span>
+                  <span>•</span>
+                  <span>{formatTime(message.timestamp)}</span>
+                </div>
+                
+                {/* Bolha da mensagem */}
+                <div className={`
+                  rounded-2xl px-4 py-3 shadow-sm backdrop-blur-sm border transition-all duration-200 hover:shadow-md
+                  ${isOwnMessage 
+                    ? 'bg-gradient-primary text-white border-primary/20 rounded-br-md' 
+                    : 'bg-card/80 text-foreground border-border/50 rounded-bl-md'
+                  }
+                `}>
+                  <p className="text-sm leading-relaxed">{message.content}</p>
+                </div>
+              </div>
             </div>
-            <div className="bg-muted rounded-lg p-3 ml-5 max-w-[85%] sm:max-w-md">
-              <p className="text-sm leading-relaxed">{message.content}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
+        
+        {/* Espaçador para scroll suave */}
+        <div className="h-4"></div>
       </div>
 
-      {/* Input Area */}
-      <div className="sticky bottom-0 bg-background border-t border-border p-4">
+      {/* Input Area com design moderno */}
+      <div className="sticky bottom-0 bg-background/80 backdrop-blur-xl border-t border-border/50 p-4 sm:p-6 shadow-lg">
         <div className="flex gap-3 max-w-4xl mx-auto">
-          <Input
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Digite sua mensagem..."
-            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-            className="flex-1"
-          />
+          <div className="flex-1 relative">
+            <Input
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Digite sua mensagem..."
+              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              className="h-12 pl-4 pr-4 text-base border-2 border-border/50 bg-background/80 backdrop-blur-sm focus:border-primary/50 focus:bg-background rounded-xl transition-all duration-200"
+            />
+          </div>
           <Button 
             onClick={sendMessage} 
             size="sm"
             disabled={!newMessage.trim()}
-            className="px-3"
+            className="h-12 w-12 bg-gradient-primary hover:shadow-lg text-white rounded-xl transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-5 w-5" />
           </Button>
         </div>
       </div>

@@ -40,8 +40,6 @@ All colors MUST be HSL.
     /* Kanban specific colors - cores modernas */
     --kanban-todo: 14 91% 60%;
     --kanban-todo-foreground: 0 0% 98%;
-    --kanban-in-progress: 45 93% 58%;
-    --kanban-in-progress-foreground: 0 0% 98%;
     --kanban-done: 142 69% 58%;
     --kanban-done-foreground: 0 0% 98%;
     --kanban-review: 271 91% 65%;
@@ -99,26 +97,12 @@ All colors MUST be HSL.
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
-  .hover-lift {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .hover-lift:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 20px -8px hsl(var(--foreground) / 0.1);
-  }
-  
   .gradient-text {
     background: var(--gradient-primary);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: gradient-shift 3s ease infinite;
-  }
-  
-  .stagger-animation > * {
-    animation-delay: calc(var(--stagger) * 100ms);
   }
   
   /* Improved scrollbar styles */

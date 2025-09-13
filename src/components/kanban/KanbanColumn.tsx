@@ -14,13 +14,13 @@ interface KanbanColumnProps {
 
 const columnStyles = {
   todo: "border-kanban-todo/30 bg-kanban-todo/5",
-  doing: "border-kanban-in-progress/30 bg-kanban-in-progress/5",
+  doing: "border-primary/30 bg-primary/5",
   done: "border-kanban-done/30 bg-kanban-done/5",
 };
 
 const headerStyles = {
   todo: "text-kanban-todo",
-  doing: "text-kanban-in-progress", 
+  doing: "text-primary", 
   done: "text-kanban-done",
 };
 
@@ -41,7 +41,7 @@ export function KanbanColumn({
       <CardHeader className="pb-2 px-3 flex-shrink-0">
         <div className="flex items-center justify-between">
           <CardTitle className={cn("text-sm font-semibold flex items-center gap-2", headerStyles[column.color])}>
-            <div className={cn("w-2.5 h-2.5 rounded-full flex-shrink-0", column.color === 'todo' ? 'bg-kanban-todo' : column.color === 'doing' ? 'bg-kanban-in-progress' : 'bg-kanban-done')} />
+            <div className={cn("w-2.5 h-2.5 rounded-full flex-shrink-0", column.color === 'todo' ? 'bg-kanban-todo' : column.color === 'doing' ? 'bg-primary' : 'bg-kanban-done')} />
             <span className="truncate">{column.title}</span>
             <span className="text-xs text-muted-foreground font-normal flex-shrink-0 bg-muted/30 px-1.5 py-0.5 rounded-full min-w-[1.5rem] text-center">
               {column.tasks.length}
@@ -70,7 +70,7 @@ export function KanbanColumn({
               <div className="text-center text-muted-foreground/50">
                 <div className={cn("w-6 h-6 rounded-full mx-auto mb-2 opacity-30", 
                   column.color === 'todo' ? 'bg-kanban-todo' : 
-                  column.color === 'doing' ? 'bg-kanban-in-progress' : 
+                  column.color === 'doing' ? 'bg-primary' : 
                   'bg-kanban-done')} />
                 <p className="text-xs">Nenhuma tarefa</p>
               </div>
@@ -81,7 +81,7 @@ export function KanbanColumn({
         <div className="flex-shrink-0 pt-2 mt-2 border-t border-border/20">
           <Button
             variant="ghost"
-            className="w-full border-2 border-dashed border-muted-foreground/20 h-8 hover:border-primary/40 hover:bg-primary/5 group text-xs font-normal"
+            className="w-full border-2 border-dashed border-primary/30 h-8 text-xs font-normal text-primary"
             onClick={() => onAddTask(column.id)}
           >
             <Plus className="h-3.5 w-3.5 mr-1.5" />

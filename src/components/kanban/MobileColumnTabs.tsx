@@ -11,7 +11,7 @@ interface MobileColumnTabsProps {
 
 const tabStyles = {
   todo: "data-[active=true]:bg-kanban-todo/20 data-[active=true]:text-kanban-todo data-[active=true]:border-kanban-todo/50",
-  doing: "data-[active=true]:bg-kanban-in-progress/20 data-[active=true]:text-kanban-in-progress data-[active=true]:border-kanban-in-progress/50",
+  doing: "data-[active=true]:bg-primary/20 data-[active=true]:text-primary data-[active=true]:border-primary/50",
   done: "data-[active=true]:bg-kanban-done/20 data-[active=true]:text-kanban-done data-[active=true]:border-kanban-done/50",
 };
 
@@ -37,7 +37,7 @@ export function MobileColumnTabs({ columns, activeColumnId, onColumnSelect }: Mo
               <div className={cn(
                 "w-2 h-2 rounded-full flex-shrink-0",
                 column.color === 'todo' ? 'bg-kanban-todo' : 
-                column.color === 'doing' ? 'bg-kanban-in-progress' : 
+                column.color === 'doing' ? 'bg-primary' : 
                 'bg-kanban-done'
               )} />
               <span className="text-sm font-medium leading-none whitespace-nowrap">{column.title}</span>

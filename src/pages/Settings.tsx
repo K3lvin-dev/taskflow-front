@@ -55,27 +55,25 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle animate-fade-in">
+    <div className="min-h-screen bg-gradient-subtle">
       <div className="container mx-auto p-6 max-w-4xl">
-        <div className="flex items-center gap-4 mb-6 animate-slide-in-left">
+        <div className="flex items-center gap-4 mb-6">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 hover-lift transition-all duration-300"
+            className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
             Voltar
           </Button>
-          <h1 className="text-3xl font-bold gradient-text">Configurações</h1>
         </div>
 
-        <div className="grid gap-6 stagger-animation">
+        <div className="grid gap-6">
           {/* Profile Settings */}
-          <Card className="glass-effect hover-lift transition-all duration-500 animate-scale-in" style={{"--stagger": 0} as any}>
+          <Card className="glass-effect">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5 animate-pulse" />
                 Perfil
               </CardTitle>
               <CardDescription>
@@ -91,7 +89,6 @@ const Settings = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Seu nome completo"
-                    className="transition-all duration-300 focus:scale-105"
                   />
                 </div>
                 <div className="space-y-2">
@@ -114,7 +111,7 @@ const Settings = () => {
                   className="bg-muted"
                 />
               </div>
-              <Button onClick={handleSaveProfile} className="w-full md:w-auto bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-lift">
+              <Button onClick={handleSaveProfile} className="w-full md:w-auto bg-gradient-primary">
                 Salvar Perfil
               </Button>
             </CardContent>

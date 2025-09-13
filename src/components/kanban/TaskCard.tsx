@@ -14,7 +14,7 @@ interface TaskCardProps {
 
 const priorityColors = {
   low: "bg-kanban-done/10 text-kanban-done border-kanban-done/30",
-  medium: "bg-kanban-in-progress/10 text-kanban-in-progress border-kanban-in-progress/30",
+  medium: "bg-primary/10 text-primary border-primary/30",
   high: "bg-destructive/10 text-destructive border-destructive/30",
 };
 
@@ -37,22 +37,29 @@ export function TaskCard({ task, currentColumn, onEdit, onSwipeToColumn }: TaskC
     return names[column];
   };
 
+  const getColumnButtonClasses = (column: ColumnType) => {
+    const classes = {
+      todo: "border-kanban-todo/50 text-kanban-todo",
+      doing: "border-primary/50 text-primary",
+      done: "border-kanban-done/50 text-kanban-done"
+    };
+    return classes[column];
+  };
+
   return (
     <div className="relative group">
       <Card
         className={cn(
-          "bg-card/60 backdrop-blur-sm border border-border/50",
-          "hover:bg-card/70 hover:border-border/60 hover:shadow-card transition-all duration-200 hover-lift",
-          "group-hover:scale-[1.005]"
+          "bg-card/60 backdrop-blur-sm border border-border/50"
         )}
       >
       <CardHeader className="pb-2 px-3 pt-3">
         <div className="flex items-start justify-between">
-          <h4 className="font-semibold text-sm leading-tight text-foreground group-hover:text-primary transition-colors duration-200 flex-1 pr-2">{task.title}</h4>
+          <h4 className="font-semibold text-sm leading-tight text-foreground flex-1 pr-2">{task.title}</h4>
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-5 w-5 opacity-40 hover:opacity-100 hover:bg-accent/30 transition-all duration-150 flex-shrink-0"
+            className="h-5 w-5 opacity-40 flex-shrink-0"
             onClick={(e) => {
               e.stopPropagation();
               onEdit(task);
@@ -76,7 +83,7 @@ export function TaskCard({ task, currentColumn, onEdit, onSwipeToColumn }: TaskC
                 <Badge 
                   key={tag} 
                   variant="secondary" 
-                  className="text-xs px-1.5 py-0.5 bg-secondary/60 hover:bg-secondary/80 transition-colors border border-border/30 h-5"
+                  className="text-xs px-1.5 py-0.5 bg-secondary/60 border border-border/30 h-5"
                 >
                   {tag}
                 </Badge>
@@ -95,7 +102,6 @@ export function TaskCard({ task, currentColumn, onEdit, onSwipeToColumn }: TaskC
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               {task.assignee && (
                 <div className="flex items-center gap-1">
-                  <User className="h-3 w-3" />
                   <span className="max-w-[60px] truncate">{task.assignee}</span>
                 </div>
               )}
@@ -117,7 +123,7 @@ export function TaskCard({ task, currentColumn, onEdit, onSwipeToColumn }: TaskC
                 e.stopPropagation();
                 onSwipeToColumn(task.id, canMoveToPrevious()!);
               }}
-              className="flex-1 h-7 text-xs transition-all duration-150 px-2"
+              className={cn("flex-1 h-7 text-xs px-2", getColumnButtonClasses(canMoveToPrevious()!))}
             >
               <ChevronLeft className="h-3 w-3 mr-1" />
               <span className="truncate">{getColumnName(canMoveToPrevious()!)}</span>
@@ -131,7 +137,7 @@ export function TaskCard({ task, currentColumn, onEdit, onSwipeToColumn }: TaskC
                 e.stopPropagation();
                 onSwipeToColumn(task.id, canMoveToNext()!);
               }}
-              className="flex-1 h-7 text-xs transition-all duration-150 px-2"
+              className={cn("flex-1 h-7 text-xs px-2", getColumnButtonClasses(canMoveToNext()!))}
             >
               <span className="truncate">{getColumnName(canMoveToNext()!)}</span>
               <ChevronRight className="h-3 w-3 ml-1" />

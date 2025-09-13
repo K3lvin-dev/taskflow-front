@@ -264,9 +264,6 @@ const TaskEditor = () => {
         <Card className="border-slate-200 shadow-sm">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                <User className="h-4 w-4 text-green-600" />
-              </div>
               <span className="font-semibold text-slate-900">Responsável</span>
               <span className="text-xs text-slate-500">(opcional)</span>
             </div>

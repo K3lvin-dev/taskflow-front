@@ -223,28 +223,21 @@ export function KanbanBoard() {
     <div className="min-h-screen bg-background">
       <div className="h-screen flex flex-col">
         {/* Header - Only on desktop */}
-        <div className="hidden md:block p-4 md:p-6 flex-shrink-0">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-center md:text-left">
-              <h1 className="text-2xl md:text-3xl font-bold">
-                Quadro Kanban
-              </h1>
-              <p className="text-muted-foreground mt-1 text-sm md:text-base">
-                Organize e acompanhe suas tarefas de projeto
-              </p>
-            </div>
-          </div>
-          
+        <div className="hidden md:block p-4 md:p-6 flex-shrink-0 bg-gradient-to-r from-background via-background/95 to-background border-b border-border/50">
           {/* Search - responsive */}
           <div className="w-full max-w-2xl">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                placeholder="Buscar tarefas..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 text-base"
-              />
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
+                  <Search className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <Input
+                  placeholder="Buscar tarefas por título, descrição ou tags..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 pr-4 h-14 text-base font-medium bg-card/80 backdrop-blur-md border-2 border-border/40 rounded-xl placeholder:text-muted-foreground/50 text-foreground"
+                />
+              </div>
             </div>
           </div>
         </div>
