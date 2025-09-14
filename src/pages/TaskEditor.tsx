@@ -3,12 +3,33 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Save, X, Trash2, Plus, User, Tag, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  X,
+  Trash2,
+  Plus,
+  User,
+  Tag,
+  AlertCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Priority, Task, ColumnType } from "@/types/kanban";
+
+interface BoardMember {
+  id: string;
+  name: string;
+  email: string;
+}
 
 interface TaskEditorProps {}
 
@@ -16,22 +37,30 @@ const TaskEditor = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const columnId = searchParams.get('column') as ColumnType;
-  const isEditing = id !== 'new';
+  const columnId = searchParams.get("column") as ColumnType;
+  const isEditing = id !== "new";
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     priority: "medium" as Priority,
-    assignee: "",
+    assignee: "none",
     tags: [] as string[],
   });
 
   const [newTag, setNewTag] = useState("");
+  const [boardMembers, setBoardMembers] = useState<BoardMember[]>([]);
   const titleRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Load board data
+    const boardData = sessionStorage.getItem("currentBoard");
+    if (boardData) {
+      const board = JSON.parse(boardData);
+      setBoardMembers(board.members || []);
+    }
+
     // Load task data from sessionStorage if editing
     if (isEditing) {
       const taskData = sessionStorage.getItem(`editTask_${id}`);
@@ -41,7 +70,7 @@ const TaskEditor = () => {
           title: task.title,
           description: task.description || "",
           priority: task.priority,
-          assignee: task.assignee || "",
+          assignee: task.assignee ? task.assignee : "none",
           tags: task.tags,
         });
       }
@@ -57,15 +86,16 @@ const TaskEditor = () => {
     if (!formData.title.trim()) return;
 
     const result = {
-      action: isEditing ? 'save' : 'create',
+      action: isEditing ? "save" : "create",
       taskData: {
         ...formData,
+        assignee: formData.assignee === "none" ? "" : formData.assignee,
         ...(isEditing ? { id } : {}),
         ...(columnId ? { columnId } : {}),
-      }
+      },
     };
 
-    sessionStorage.setItem('taskEditorResult', JSON.stringify(result));
+    sessionStorage.setItem("taskEditorResult", JSON.stringify(result));
     navigate(-1);
   };
 
@@ -73,11 +103,11 @@ const TaskEditor = () => {
     if (!isEditing) return;
 
     const result = {
-      action: 'delete',
-      taskId: id
+      action: "delete",
+      taskId: id,
     };
 
-    sessionStorage.setItem('taskEditorResult', JSON.stringify(result));
+    sessionStorage.setItem("taskEditorResult", JSON.stringify(result));
     navigate(-1);
   };
 
@@ -87,23 +117,23 @@ const TaskEditor = () => {
 
   const addTag = () => {
     if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        tags: [...prev.tags, newTag.trim()]
+        tags: [...prev.tags, newTag.trim()],
       }));
       setNewTag("");
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
     }));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent, action?: () => void) => {
-    if (e.key === 'Enter' && action) {
+    if (e.key === "Enter" && action) {
       e.preventDefault();
       action();
     }
@@ -112,8 +142,8 @@ const TaskEditor = () => {
   const getPriorityColor = (priority: Priority) => {
     const colors = {
       low: "bg-emerald-100 text-emerald-700 border-emerald-300",
-      medium: "bg-amber-100 text-amber-700 border-amber-300", 
-      high: "bg-red-100 text-red-700 border-red-300"
+      medium: "bg-amber-100 text-amber-700 border-amber-300",
+      high: "bg-red-100 text-red-700 border-red-300",
     };
     return colors[priority];
   };
@@ -122,7 +152,7 @@ const TaskEditor = () => {
     const icons = {
       low: "🟢",
       medium: "🟡",
-      high: "🔴"
+      high: "🔴",
     };
     return icons[priority];
   };
@@ -150,9 +180,9 @@ const TaskEditor = () => {
           </div>
         </div>
         {isEditing && (
-          <Button 
-            type="button" 
-            variant="ghost" 
+          <Button
+            type="button"
+            variant="ghost"
             onClick={handleDelete}
             size="icon"
             className="h-10 w-10 rounded-full text-red-600 hover:bg-red-50"
@@ -164,173 +194,217 @@ const TaskEditor = () => {
 
       {/* Content */}
       <div className="flex-1 flex flex-col min-h-0">
-        <div 
-          ref={scrollRef}
-          className="flex-1 overflow-y-auto p-4 space-y-4"
-        >
-        {/* Title Card */}
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                <span className="text-sm">📝</span>
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Title Card */}
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-sm">📝</span>
+                </div>
+                <span className="font-semibold text-slate-900">
+                  Título da Tarefa
+                </span>
               </div>
-              <span className="font-semibold text-slate-900">Título da Tarefa</span>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <Input
-              ref={titleRef}
-              value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              placeholder="Ex: Implementar nova funcionalidade"
-              className="h-12 text-base border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleSave();
-                }
-              }}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Description Card */}
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                <span className="text-sm">📄</span>
-              </div>
-              <span className="font-semibold text-slate-900">Descrição</span>
-              <span className="text-xs text-slate-500">(opcional)</span>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <Textarea
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Descreva os detalhes da tarefa..."
-              className="min-h-[80px] resize-none text-base border-slate-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-            />
-          </CardContent>
-        </Card>
-
-        {/* Priority Card */}
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                <AlertCircle className="h-4 w-4 text-orange-600" />
-              </div>
-              <span className="font-semibold text-slate-900">Prioridade</span>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <Select
-              value={formData.priority}
-              onValueChange={(value: Priority) => 
-                setFormData(prev => ({ ...prev, priority: value }))
-              }
-            >
-              <SelectTrigger className="h-12 text-base border-slate-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="low">
-                  <div className="flex items-center gap-2">
-                    <span>🟢</span>
-                    <span>Baixa</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="medium">
-                  <div className="flex items-center gap-2">
-                    <span>🟡</span>
-                    <span>Média</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="high">
-                  <div className="flex items-center gap-2">
-                    <span>🔴</span>
-                    <span>Alta</span>
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
-
-        {/* Assignee Card */}
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-900">Responsável</span>
-              <span className="text-xs text-slate-500">(opcional)</span>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <Input
-              value={formData.assignee}
-              onChange={(e) => setFormData(prev => ({ ...prev, assignee: e.target.value }))}
-              placeholder="Ex: João Silva"
-              className="h-12 text-base border-slate-300 focus:border-green-500 focus:ring-1 focus:ring-green-500"
-            />
-          </CardContent>
-        </Card>
-
-        {/* Tags Card */}
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center">
-                <Tag className="h-4 w-4 text-pink-600" />
-              </div>
-              <span className="font-semibold text-slate-900">Tags</span>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0 space-y-3">
-            <div className="flex gap-2">
+            </CardHeader>
+            <CardContent className="pt-0">
               <Input
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                placeholder="Adicionar tag"
-                className="flex-1 h-12 text-base border-slate-300 focus:border-pink-500 focus:ring-1 focus:ring-pink-500"
-                onKeyDown={(e) => handleKeyPress(e, addTag)}
+                ref={titleRef}
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, title: e.target.value }))
+                }
+                placeholder="Ex: Implementar nova funcionalidade"
+                className="h-12 text-base border-slate-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSave();
+                  }
+                }}
               />
-              <Button
-                type="button"
-                onClick={addTag}
-                variant="outline"
-                size="icon"
-                disabled={!newTag.trim()}
-                className="h-12 w-12 border-slate-300 hover:bg-pink-50 hover:border-pink-300"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
+            </CardContent>
+          </Card>
 
-            {formData.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {formData.tags.map((tag, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className="flex items-center gap-1 px-3 py-1.5 bg-pink-100 text-pink-700 border border-pink-200 hover:bg-pink-200"
-                  >
-                    <span className="text-sm">{tag}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeTag(tag)}
-                      className="hover:text-pink-900"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
+          {/* Description Card */}
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                  <span className="text-sm">📄</span>
+                </div>
+                <span className="font-semibold text-slate-900">Descrição</span>
+                <span className="text-xs text-slate-500">(opcional)</span>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Textarea
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+                placeholder="Descreva os detalhes da tarefa..."
+                className="min-h-[80px] resize-none text-base border-slate-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+              />
+            </CardContent>
+          </Card>
+
+          {/* Priority Card */}
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                  <AlertCircle className="h-4 w-4 text-orange-600" />
+                </div>
+                <span className="font-semibold text-slate-900">Prioridade</span>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Select
+                value={formData.priority}
+                onValueChange={(value: Priority) =>
+                  setFormData((prev) => ({ ...prev, priority: value }))
+                }
+              >
+                <SelectTrigger className="h-12 text-base border-slate-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-500">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">
+                    <div className="flex items-center gap-2">
+                      <span>🟢</span>
+                      <span>Baixa</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="medium">
+                    <div className="flex items-center gap-2">
+                      <span>🟡</span>
+                      <span>Média</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="high">
+                    <div className="flex items-center gap-2">
+                      <span>🔴</span>
+                      <span>Alta</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+
+          {/* Assignee Card */}
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                  <User className="h-4 w-4 text-green-600" />
+                </div>
+                <span className="font-semibold text-slate-900">
+                  Responsável
+                </span>
+                <span className="text-xs text-slate-500">(opcional)</span>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Select
+                value={formData.assignee}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, assignee: value }))
+                }
+              >
+                <SelectTrigger className="h-12 text-base border-slate-300 focus:border-green-500 focus:ring-1 focus:ring-green-500">
+                  <SelectValue placeholder="Selecionar responsável" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-slate-200 shadow-lg z-50">
+                  <SelectItem value="none">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
+                        <User className="h-3 w-3 text-slate-500" />
+                      </div>
+                      <span className="text-slate-500">Nenhum responsável</span>
+                    </div>
+                  </SelectItem>
+                  {boardMembers.map((member) => (
+                    <SelectItem key={member.id} value={member.name}>
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                          <span className="text-xs font-medium text-blue-600">
+                            {member.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {member.name}
+                          </span>
+                          <span className="text-xs text-slate-500">
+                            {member.email}
+                          </span>
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+
+          {/* Tags Card */}
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center">
+                  <Tag className="h-4 w-4 text-pink-600" />
+                </div>
+                <span className="font-semibold text-slate-900">Tags</span>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0 space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  placeholder="Adicionar tag"
+                  className="flex-1 h-12 text-base border-slate-300 focus:border-pink-500 focus:ring-1 focus:ring-pink-500"
+                  onKeyDown={(e) => handleKeyPress(e, addTag)}
+                />
+                <Button
+                  type="button"
+                  onClick={addTag}
+                  variant="outline"
+                  size="icon"
+                  disabled={!newTag.trim()}
+                  className="h-12 w-12 border-slate-300 hover:bg-pink-50 hover:border-pink-300"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {formData.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {formData.tags.map((tag, index) => (
+                    <Badge
+                      key={index}
+                      variant="secondary"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-pink-100 text-pink-700 border border-pink-200 hover:bg-pink-200"
+                    >
+                      <span className="text-sm">{tag}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeTag(tag)}
+                        className="hover:text-pink-900"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Save Button */}
