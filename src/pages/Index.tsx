@@ -380,11 +380,11 @@ const AppContent = () => {
     </div>
   );
 };
-const Index = () => {
+const HomePage = () => {
   return (
     <div>
       <AppContent />
     </div>
   );
 };
-export default Index;
+export default HomePage;
