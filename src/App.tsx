@@ -4,11 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
-import Settings from "@/pages/settings";
-import Chat from "@/pages/chat";
-import TaskEditor from "@/pages/taskEditor";
-import NotFound from "@/pages/notFound";
-import Index from "@/pages/index";
+import HomePage from "@/pages/index.tsx";
+import Settings from "@/pages/settings.tsx";
+import Chat from "@/pages/chat.tsx";
+import TaskEditor from "@/pages/taskEditor.tsx";
+import NotFound from "@/pages/notFound.tsx";
+import Index from "@/pages/index.tsx";
 
 const queryClient = new QueryClient();
 
