@@ -1,13 +1,4 @@
-# Ignorar todas as pastas node_modules
-**/node_modules
-
-# Ignorar a pasta de build
-**/dist
-**/build
-
-# Ignorar ficheiros de log e ambiente
-npm-debug.log
-.env*
-
-# Ignorar diretórios do Git
+node_modules
+dist
 .git
+.gitignore
