@@ -6,7 +6,7 @@ RUN apk add --no-cache build-base python3
 
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm install --force
+RUN npm install
 
 COPY . .
 RUN npm run build
