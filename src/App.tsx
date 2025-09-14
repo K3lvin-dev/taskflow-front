@@ -4,12 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+
 import HomePage from "@/pages/index.tsx";
 import Settings from "@/pages/settings.tsx";
 import Chat from "@/pages/chat.tsx";
 import TaskEditor from "@/pages/taskEditor.tsx";
 import NotFound from "@/pages/notFound.tsx";
-import Index from "@/pages/index.tsx";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +21,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/task/new" element={<TaskEditor />} />
