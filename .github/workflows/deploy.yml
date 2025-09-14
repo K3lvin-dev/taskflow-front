@@ -14,6 +14,16 @@ jobs:
       - name: Fazer checkout do repositório
         uses: actions/checkout@v4
 
+      - name: Verificar arquivos no repositório (debug)
+        run: |
+          echo "PWD: $(pwd)"
+          echo "Listando top-level"
+          ls -la
+          echo "Listando src/pages"
+          ls -la src/pages || true
+          echo "Procurando arquivos em src"
+          find src -maxdepth 3 -type f | sed -n '1,200p'
+
       - name: Logar no GHCR
         uses: docker/login-action@v3
         with:
