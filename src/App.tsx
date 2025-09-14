@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 
-import HomePage from "@/pages/index.tsx";
+import HomePage from "./pages/index.tsx";
 import Settings from "@/pages/settings.tsx";
 import Chat from "@/pages/chat.tsx";
 import TaskEditor from "@/pages/taskEditor.tsx";
