@@ -36,3 +36,4 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/k3lvin-dev/taskflow-frontend:${{ env.TAG }}
+          no-cache: true
