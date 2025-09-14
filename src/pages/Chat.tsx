@@ -65,6 +65,7 @@ const Chat = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">Chat da Equipe</h1>
+              <p className="text-xs text-muted-foreground">Colabore em tempo real</p>
             </div>
           </div>
         </div>

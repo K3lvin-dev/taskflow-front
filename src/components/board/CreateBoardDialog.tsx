@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,21 +12,17 @@ interface CreateBoardDialogProps {
   onCreateBoard: (data: CreateBoardData) => void;
 }
 
-export function CreateBoardDialog({
-  open,
-  onOpenChange,
-  onCreateBoard,
-}: CreateBoardDialogProps) {
+export function CreateBoardDialog({ open, onOpenChange, onCreateBoard }: CreateBoardDialogProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim()) return;
+    if (!title.trim()) return;
 
     onCreateBoard({
       title: title.trim(),
-      description: description.trim(),
+      description: description.trim() || undefined,
     });
 
     setTitle("");
@@ -57,23 +48,17 @@ export function CreateBoardDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Descrição do Quadro</Label>
+            <Label htmlFor="description">Descrição (opcional)</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Descreva o propósito do quadro"
               rows={3}
-              required
             />
           </div>
           <div className="flex gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="flex-1"
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
               Cancelar
             </Button>
             <Button type="submit" className="flex-1">

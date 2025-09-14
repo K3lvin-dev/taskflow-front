@@ -1,7 +1,7 @@
 export interface Board {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   code: string;
   createdAt: Date;
   updatedAt: Date;
@@ -15,11 +15,11 @@ export interface BoardMember {
   id: string;
   name: string;
   email: string;
-  role: "owner" | "member";
+  role: 'owner' | 'member';
   joinedAt: Date;
 }
 
 export interface CreateBoardData {
   title: string;
-  description: string;
+  description?: string;
 }

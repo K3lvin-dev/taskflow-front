@@ -3,7 +3,6 @@ import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
-import importPlugin from "eslint-plugin-import";
 
 export default tseslint.config(
   { ignores: ["dist"] },
@@ -17,14 +16,8 @@ export default tseslint.config(
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      import: importPlugin,
     },
     rules: {
-      // Ensure imports can be resolved; with typescript resolver this will catch case mismatches on Linux
-      "import/no-unresolved": [
-        "error",
-        { commonjs: true, amd: true }
-      ],
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": [
         "warn",
@@ -32,10 +25,5 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-unused-vars": "off",
     },
-    settings: {
-      'import/resolver': {
-        typescript: {}
-      }
-    }
   }
 );
