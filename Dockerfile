@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Copia package manifests e instala dependências
 COPY package.json package-lock.json* ./
-RUN npm ci --silent || npm install --silent
+RUN npm ci --silent || npm install --silent --force
 
 # Copia o restante do código e gera o build de produção
 COPY . .
