@@ -14,16 +14,21 @@ jobs:
       - name: Fazer checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Verificar arquivos no repositório (debug)
-        run: |
-          echo "PWD: $(pwd)"
-          echo "Listando top-level"
-          ls -la
-          echo "Listando src/pages"
-          ls -la src/pages || true
-          echo "Procurando arquivos em src"
-          find src -maxdepth 3 -type f | sed -n '1,200p'
+      # --- PASSO 1: Configurar o Node.js ---
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm' # Ativa o cache para instalações mais rápidas
 
+      # --- PASSO 2: Instalar dependências e construir a aplicação ---
+      - name: Instalar dependências
+        run: npm install
+      
+      - name: Construir a aplicação
+        run: npm run build # Isto irá criar a pasta 'dist'
+
+      # --- PASSO 3: Fazer o build da imagem Docker com os ficheiros já prontos ---
       - name: Logar no GHCR
         uses: docker/login-action@v3
         with:
@@ -40,15 +45,9 @@ jobs:
             echo "TAG=dev" >> $GITHUB_ENV
           fi
 
-      - name: Debug - List files in pages directory
-        run: |
-          echo "Listing files in src/pages:"
-          ls -la src/pages
-
       - name: Construir e enviar imagem Docker
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ghcr.io/k3lvin-dev/taskflow-frontend:${{ env.TAG }}
-          no-cache: true

@@ -1,21 +1,17 @@
-# Stage 1: Construir a aplicação
-FROM node:22-alpine AS build
+# Utiliza uma imagem Nginx super leve, pois só precisamos de servir ficheiros estáticos
+FROM nginx:1.29-alpine
 
-WORKDIR /app
+# Remove a configuração padrão do Nginx
+RUN rm /etc/nginx/conf.d/default.conf
 
-COPY package.json package-lock.json ./
-RUN npm install
-COPY . .
+# Copia a sua própria configuração do Nginx (opcional, mas recomendado)
+COPY nginx.conf /etc/nginx/conf.d
 
-# --- PASSO DE DEPURAÇÃO ADICIONADO ---
-# Lista todos os ficheiros de forma recursiva para vermos o que está dentro do contentor
-RUN ls -laR
+# Copia os ficheiros da aplicação que foram construídos no passo anterior (no workflow)
+COPY dist /usr/share/nginx/html
 
-# Executa o build
-RUN npm run build
-
-# Stage 2: Servir a aplicação a partir de um servidor leve
-FROM nginx:1.29-alpine AS final
-COPY --from=build /app/dist /usr/share/nginx/html
+# Expõe a porta 80
 EXPOSE 80
+
+# Comando para iniciar o servidor
 CMD ["nginx", "-g", "daemon off;"]
