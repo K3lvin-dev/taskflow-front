@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { KanbanBoard } from "@/components/kanban/KanbanBoard";
+import { KanbanBoard } from "@/components/kanban/kanbanBoard";
 import { SimpleChat } from "@/components/SimpleChat";
 import { SimpleAuth } from "@/components/SimpleAuth";
 import { useAuth } from "@/hooks/useAuth";
