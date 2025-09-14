@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { KanbanBoard } from "@/components/kanban/KanbanBoard";
-import { SimpleChat } from "@/components/SimpleChat";
-import { SimpleAuth } from "@/components/SimpleAuth";
+import { KanbanBoard } from "@/components/kanban/kanbanBoard";
+import { SimpleChat } from "@/components/simpleChat";
+import { SimpleAuth } from "@/components/simpleAuth";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, Settings, Plus, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Board, CreateBoardData } from "@/types/board";
-import { BoardCard } from "@/components/board/BoardCard";
-import { CreateBoardDialog } from "@/components/board/CreateBoardDialog";
-import { JoinBoardDialog } from "@/components/board/JoinBoardDialog";
-import { useToast } from "@/hooks/use-toast";
+import { BoardCard } from "@/components/board/boardCard";
+import { CreateBoardDialog } from "@/components/board/createBoardDialog";
+import { JoinBoardDialog } from "@/components/board/joinBoardDialog";
+import { useToast } from "@/hooks/useToast";
 // Mock data for boards
 const mockBoards: Board[] = [
   {
