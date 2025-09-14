@@ -1,13 +1,6 @@
-# Ignorar dependências e logs
+# Ignorar dependências e artefactos de build
 node_modules
-npm-debug.log
-
-# Ignorar a pasta de build (o Docker irá criá-la)
 dist
 
-# Ignorar ficheiros do Git e do sistema
+# Ignorar diretórios do Git
 .git
-.gitignore
-
-# Ignorar ficheiros de ambiente local
-.env
