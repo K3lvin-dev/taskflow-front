@@ -40,6 +40,11 @@ jobs:
             echo "TAG=dev" >> $GITHUB_ENV
           fi
 
+      - name: Debug - List files in pages directory
+        run: |
+          echo "Listing files in src/pages:"
+          ls -la src/pages
+
       - name: Construir e enviar imagem Docker
         uses: docker/build-push-action@v5
         with:
