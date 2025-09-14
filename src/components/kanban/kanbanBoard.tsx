@@ -18,7 +18,8 @@ const initialColumns: Column[] = [
       {
         id: "1",
         title: "Design da landing page",
-        description: "Criar um design moderno e responsivo para a página inicial",
+        description:
+          "Criar um design moderno e responsivo para a página inicial",
         priority: "high",
         assignee: "João Silva",
         tags: ["design", "ui/ux"],
@@ -26,7 +27,7 @@ const initialColumns: Column[] = [
         updatedAt: new Date(),
       },
       {
-        id: "2", 
+        id: "2",
         title: "Configurar banco de dados",
         description: "Configurar banco PostgreSQL com schemas apropriados",
         priority: "medium",
@@ -77,17 +78,19 @@ export function KanbanBoard() {
   const navigate = useNavigate();
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeMobileColumn, setActiveMobileColumn] = useState<ColumnType>(initialColumns[0]?.id || "todo");
+  const [activeMobileColumn, setActiveMobileColumn] = useState<ColumnType>(
+    initialColumns[0]?.id || "todo"
+  );
 
   // Listen for task editor results
   useEffect(() => {
     const handleStorageChange = () => {
-      const result = sessionStorage.getItem('taskEditorResult');
+      const result = sessionStorage.getItem("taskEditorResult");
       if (result) {
         const data = JSON.parse(result);
-        sessionStorage.removeItem('taskEditorResult');
+        sessionStorage.removeItem("taskEditorResult");
 
-        if (data.action === 'create') {
+        if (data.action === "create") {
           const newTask: Task = {
             id: crypto.randomUUID(),
             title: data.taskData.title,
@@ -106,18 +109,18 @@ export function KanbanBoard() {
                 : column
             )
           );
-        } else if (data.action === 'save') {
+        } else if (data.action === "save") {
           setColumns((columns) =>
             columns.map((column) => ({
               ...column,
               tasks: column.tasks.map((task) =>
-                task.id === data.taskData.id 
-                  ? { ...task, ...data.taskData, updatedAt: new Date() } 
+                task.id === data.taskData.id
+                  ? { ...task, ...data.taskData, updatedAt: new Date() }
                   : task
               ),
             }))
           );
-        } else if (data.action === 'delete') {
+        } else if (data.action === "delete") {
           setColumns((columns) =>
             columns.map((column) => ({
               ...column,
@@ -132,28 +135,32 @@ export function KanbanBoard() {
     handleStorageChange();
 
     // Listen for future changes
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   // Mobile column navigation
-  const navigateToColumn = (direction: 'prev' | 'next') => {
-    const currentIndex = filteredColumns.findIndex(col => col.id === activeMobileColumn);
+  const navigateToColumn = (direction: "prev" | "next") => {
+    const currentIndex = filteredColumns.findIndex(
+      (col) => col.id === activeMobileColumn
+    );
     let newIndex;
-    
-    if (direction === 'prev') {
-      newIndex = currentIndex > 0 ? currentIndex - 1 : filteredColumns.length - 1;
+
+    if (direction === "prev") {
+      newIndex =
+        currentIndex > 0 ? currentIndex - 1 : filteredColumns.length - 1;
     } else {
-      newIndex = currentIndex < filteredColumns.length - 1 ? currentIndex + 1 : 0;
+      newIndex =
+        currentIndex < filteredColumns.length - 1 ? currentIndex + 1 : 0;
     }
-    
+
     setActiveMobileColumn(filteredColumns[newIndex].id);
   };
 
   // Swipe gesture setup
   const swipeRef = useSwipeGesture({
-    onSwipeLeft: () => navigateToColumn('next'),
-    onSwipeRight: () => navigateToColumn('prev'),
+    onSwipeLeft: () => navigateToColumn("next"),
+    onSwipeRight: () => navigateToColumn("prev"),
     threshold: 50,
   });
 
@@ -166,9 +173,11 @@ export function KanbanBoard() {
   };
 
   const findColumnByTaskId = (taskId: string): Column | null => {
-    return columns.find((column) =>
-      column.tasks.some((task) => task.id === taskId)
-    ) || null;
+    return (
+      columns.find((column) =>
+        column.tasks.some((task) => task.id === taskId)
+      ) || null
+    );
   };
 
   const findColumnById = (id: string): Column | null => {
@@ -209,13 +218,15 @@ export function KanbanBoard() {
     );
   };
 
-
   const filteredColumns = columns.map((column) => ({
     ...column,
-    tasks: column.tasks.filter((task) =>
-      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    tasks: column.tasks.filter(
+      (task) =>
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
+        )
     ),
   }));
 
@@ -269,18 +280,18 @@ export function KanbanBoard() {
           <div className="h-full flex flex-col">
             {/* Desktop View */}
             <div className="hidden md:block flex-1 min-h-0 p-2">
-            <div className="flex gap-4 h-full overflow-x-auto scrollbar-hide">
+              <div className="flex gap-4 h-full overflow-x-auto scrollbar-hide">
                 {filteredColumns.map((column, index) => (
-                  <div 
-                    key={column.id} 
+                  <div
+                    key={column.id}
                     className="flex-shrink-0 h-full min-w-80 w-80"
                   >
-                        <KanbanColumn
-                          column={column}
-                          onAddTask={handleAddTask}
-                          onEditTask={handleEditTask}
-                          onSwipeToColumn={handleSwipeToColumn}
-                        />
+                    <KanbanColumn
+                      column={column}
+                      onAddTask={handleAddTask}
+                      onEditTask={handleEditTask}
+                      onSwipeToColumn={handleSwipeToColumn}
+                    />
                   </div>
                 ))}
               </div>
@@ -292,7 +303,7 @@ export function KanbanBoard() {
                 {/* Active column - full width */}
                 <div className="flex-1 min-h-0">
                   {filteredColumns
-                    .filter(column => column.id === activeMobileColumn)
+                    .filter((column) => column.id === activeMobileColumn)
                     .map((column) => (
                       <div key={column.id} className="w-full h-full">
                         <KanbanColumn
@@ -308,8 +319,6 @@ export function KanbanBoard() {
             </div>
           </div>
         </div>
-
-        
       </div>
     </div>
   );
