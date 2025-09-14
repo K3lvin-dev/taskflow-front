@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 
-// Corrected and cleaned imports
 import HomePage from "@/pages/index.tsx";
 import Settings from "@/pages/settings.tsx";
 import Chat from "@/pages/chat.tsx";
@@ -22,7 +21,6 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Use the corrected HomePage component */}
             <Route path="/" element={<HomePage />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/chat" element={<Chat />} />

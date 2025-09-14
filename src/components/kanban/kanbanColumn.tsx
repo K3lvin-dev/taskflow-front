@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { TaskCard } from "./TaskCard";
+import { TaskCard } from "./taskCard";
 import { Column, Task } from "@/types/kanban";
 import { cn } from "@/lib/utils";
 
